@@ -22,5 +22,8 @@
   "bugs": {
     "url": "https://github.com/abraxas93/dao-app/issues"
   },
-  "homepage": "https://github.com/abraxas93/dao-app#readme"
+  "homepage": "https://github.com/abraxas93/dao-app#readme",
+  "dependencies": {
+    "solhint": "^3.3.4"
+  }
 }
