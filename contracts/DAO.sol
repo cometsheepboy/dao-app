@@ -11,7 +11,7 @@ contract DAO {
     struct Partner {
         address referrer;
         uint balance;
-        mapping(address => uint) price;
+        mapping(address => uint) prices;
         mapping(bytes3 => IERC20) tokens;
     }
 
@@ -31,14 +31,17 @@ contract DAO {
         require(msg.value >= 1 ether, "NOT_ENOUGH_ETH");
         _partners[msg.sender].referrer = _referrer;
         _totalEth += msg.value;
+        // TODO: pay to upline
         return true;
     }
 
-    function emitCoin(string memory _name, bytes3 _symbol) external payable onlyPartner returns(bool) {
+    function emitCoin(string memory _name, bytes3 _symbol, uint _price) external payable onlyPartner returns(bool) {
         require(msg.value >= 0.1 ether);
         assert(_totalEth + 0.1 ether > _totalEth);
         _totalEth += 0.1 ether;
-        _partners[msg.sender].tokens[_symbol] = new ERC20(_name, string(abi.encodePacked(_symbol)), 18, msg.sender);
+        IERC20 coin = new ERC20(_name, string(abi.encodePacked(_symbol)), 18, msg.sender);
+        _partners[msg.sender].tokens[_symbol] = coin;
+        _partners[msg.sender].prices[address(coin)] = _price;
         return true;
     }
     
