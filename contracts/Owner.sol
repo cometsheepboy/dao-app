@@ -24,6 +24,7 @@ contract Owner {
 
     function setOwner(address _newOwner) external onlyOwner {
         owner = _newOwner;
+        _ownerHistory.push(_newOwner);
         emit OwnerChanged(msg.sender, _newOwner);
     }
 
