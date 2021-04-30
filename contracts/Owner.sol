@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: GPL-3.0
-pragma solidity ^0.8.4;
+pragma solidity >=0.4.21 <0.7.0;
 
 contract Owner {
 
@@ -9,8 +9,9 @@ contract Owner {
     event OwnerChanged(address indexed _from, address indexed _to);
     event OwnerHistory(address[] _history);
 
-    constructor() {
+    constructor() public {
         owner = msg.sender;
+        _ownerHistory.push(msg.sender);
     }
 
     modifier onlyOwner {
