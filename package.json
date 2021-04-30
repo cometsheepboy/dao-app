@@ -1,0 +1,26 @@
+{
+  "name": "dao-app",
+  "version": "1.0.0",
+  "description": "dao smart contracts with frontend",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/abraxas93/dao-app.git"
+  },
+  "keywords": [
+    "solidity",
+    "react",
+    "smart",
+    "contracts",
+    "javascript"
+  ],
+  "author": "abraxas",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/abraxas93/dao-app/issues"
+  },
+  "homepage": "https://github.com/abraxas93/dao-app#readme"
+}
