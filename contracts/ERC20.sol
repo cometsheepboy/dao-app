@@ -8,20 +8,29 @@ contract ERC20 is IERC20 {
     string private _symbol;
     uint8 private _decimals;
     uint private _totalSupply;
+    address public minter;
     
     mapping(address => uint) private _balances;
     mapping(address => mapping(address => uint)) private _allowances;
     
-    constructor(string memory name_, string memory symbol_, uint8 decimals_) {
+    constructor(string memory name_, string memory symbol_, uint8 decimals_, address minter_) {
         _name = name_;
         _symbol = symbol_;
         _decimals = decimals_;
+        minter = minter_;
+    }
+    
+    modifier onlyMinter() {
+        require(msg.sender == minter, "MOD_ONLY_MINTER");
+        _;
     }
 
-    function _mint(uint _amount) internal returns(uint) {
+    function mint(address _to, uint _amount) external onlyMinter returns(uint) {
         assert(_totalSupply + _amount > _totalSupply);
+        assert(_balances[_to] + _amount > _balances[_to]);
         require(_amount != 0, "ZERO_AMOUNT");
         _totalSupply += _amount;
+        _balances[_to] += _amount;
         return _totalSupply;
     }
     
