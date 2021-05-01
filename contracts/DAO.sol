@@ -16,6 +16,7 @@ contract DAO {
     }
 
     mapping(address => Partner) private _partners;
+    mapping(address => address) private _coinsToPartner;
 
     constructor(string memory _name) {
         name = _name;
@@ -26,12 +27,28 @@ contract DAO {
         _;
     }
 
+    function buyToken(address _token) external payable returns(bool) {
+        // mint
+        address partner = address(_coinsToPartner[_token]);
+        _partners[partner].balance += msg.value;
+        // TODO: mint new tokens to buyer
+        return true;
+    }
+
+    function setPrice(bytes3 _symbol, uint _price) external onlyPartner returns(bool) {
+        address token = address(_partners[msg.sender].tokens[_symbol]);
+        _partners[msg.sender].prices[token] = _price;
+        // TODO: emit new event
+        return true;
+    }
+
     function register(address _referrer) external payable returns(bool) {
         require(_referrer != address(0), "REFERRER_REQUIRED");
         require(msg.value >= 1 ether, "NOT_ENOUGH_ETH");
         _partners[msg.sender].referrer = _referrer;
         _totalEth += msg.value;
         // TODO: pay to upline
+        // TODO: emit new event
         return true;
     }
 
@@ -57,3 +74,6 @@ contract DAO {
 // every partner can emit it own currency and set price for it
 // part of ownership based on part of ether received for selling coins
 // partners can exchange coins between themselves
+
+
+// 5U6ZBH
