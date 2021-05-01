@@ -11,12 +11,15 @@ contract DAO {
     struct Partner {
         address referrer;
         uint balance;
-        mapping(address => uint) prices;
-        mapping(bytes3 => IERC20) tokens;
+    }
+
+    struct Coin {
+        address owner;
+        uint price;
     }
 
     mapping(address => Partner) private _partners;
-    mapping(address => address) private _coinsToPartner;
+    mapping(address => Coin) private _coinOwners;
 
     constructor(string memory _name) {
         name = _name;
@@ -27,19 +30,23 @@ contract DAO {
         _;
     }
 
-    function buyToken(address _token) external payable returns(bool) {
-        // mint
-        address partner = address(_coinsToPartner[_token]);
-        _partners[partner].balance += msg.value;
-        // TODO: mint new tokens to buyer
-        return true;
-    }
+    // function buyToken(address _token) external payable returns(bool) {
+    //     // mint
+    //     address partner = address(_coinsToPartner[_token]);
+    //     _partners[partner].balance += msg.value;
+    //     // TODO: mint new tokens to buyer
+    //     return true;
+    // }
 
-    function setPrice(bytes3 _symbol, uint _price) external onlyPartner returns(bool) {
-        address token = address(_partners[msg.sender].tokens[_symbol]);
-        _partners[msg.sender].prices[token] = _price;
-        // TODO: emit new event
-        return true;
+    // function setCoinPrice(bytes3 _symbol, uint _price) external onlyPartner returns(bool) {
+    //     address token = address(_partners[msg.sender].tokens[_symbol]);
+    //     _partners[msg.sender].prices[token] = _price;
+    //     // TODO: emit new event
+    //     return true;
+    // }
+
+    function mint() external payable onlyPartner returns(bool) {
+
     }
 
     function register(address _referrer) external payable returns(bool) {
@@ -57,8 +64,9 @@ contract DAO {
         assert(_totalEth + 0.1 ether > _totalEth);
         _totalEth += 0.1 ether;
         IERC20 coin = new ERC20(_name, string(abi.encodePacked(_symbol)), 18, msg.sender);
-        _partners[msg.sender].tokens[_symbol] = coin;
-        _partners[msg.sender].prices[address(coin)] = _price;
+        _coinOwners[address(coin)].owner = msg.sender;
+        _coinOwners[address(coin)].price = _price;
+        // TODO: emit event new token added
         return true;
     }
     
