@@ -30,6 +30,11 @@ contract DAO {
         _;
     }
 
+    modifier onlyCoinOwner(address _coin) {
+        require(_coinOwners[_coin].owner == msg.sender);
+        _;
+    }
+
     // function buyToken(address _token) external payable returns(bool) {
     //     // mint
     //     address partner = address(_coinsToPartner[_token]);
@@ -45,8 +50,15 @@ contract DAO {
     //     return true;
     // }
 
-    function mint() external payable onlyPartner returns(bool) {
 
+    function mint(address _coin) external payable onlyPartner onlyCoinOwner(_coin) returns(bool) {
+        // TODO: add reverts check ...
+        _partners[msg.sender].balance += msg.value;
+        uint amount = msg.value / _coinOwners[_coin].price;
+        ERC20 ctr = ERC20(_coin);
+        // TODO: extend base ERC20 token to more specified
+        ctr.mint(msg.sender, amount);
+        return true;
     }
 
     function register(address _referrer) external payable returns(bool) {
