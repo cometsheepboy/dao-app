@@ -3,8 +3,9 @@ pragma solidity ^0.8.4;
 
 import "./IERC20.sol";
 import "./ERC20.sol";
+import "./Owner.sol";
 
-contract DAO {
+contract DAO is Owner {
     string public name;
     uint private _totalEth;
     
@@ -52,18 +53,17 @@ contract DAO {
 
 
     function mint(address _coin) external payable onlyPartner onlyCoinOwner(_coin) returns(bool) {
-        // TODO: add reverts check ...
+        assert(_partners[msg.sender].balance + msg.value > _partners[msg.sender].balance);
         _partners[msg.sender].balance += msg.value;
         uint amount = msg.value / _coinOwners[_coin].price;
         ERC20 ctr = ERC20(_coin);
-        // TODO: extend base ERC20 token to more specified
         ctr.mint(msg.sender, amount);
         return true;
     }
 
     function register(address _referrer) external payable returns(bool) {
         require(_referrer != address(0), "REFERRER_REQUIRED");
-        require(msg.value >= 1 ether, "NOT_ENOUGH_ETH");
+        require(msg.value >= 1000, "NOT_ENOUGH_ETH");
         _partners[msg.sender].referrer = _referrer;
         _totalEth += msg.value;
         // TODO: pay to upline
@@ -71,10 +71,10 @@ contract DAO {
         return true;
     }
 
-    function emitCoin(string memory _name, bytes3 _symbol, uint _price) external payable onlyPartner returns(bool) {
-        require(msg.value >= 0.1 ether);
-        assert(_totalEth + 0.1 ether > _totalEth);
-        _totalEth += 0.1 ether;
+    function emitToken(string memory _name, bytes3 _symbol, uint _price) external payable onlyPartner returns(bool) {
+        require(msg.value >= 100);
+        assert(_totalEth + 100 > _totalEth);
+        _totalEth += 100;
         IERC20 coin = new ERC20(_name, string(abi.encodePacked(_symbol)), 18, msg.sender);
         _coinOwners[address(coin)].owner = msg.sender;
         _coinOwners[address(coin)].price = _price;
@@ -94,6 +94,3 @@ contract DAO {
 // every partner can emit it own currency and set price for it
 // part of ownership based on part of ether received for selling coins
 // partners can exchange coins between themselves
-
-
-// 5U6ZBH
