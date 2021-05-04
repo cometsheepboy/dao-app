@@ -22,6 +22,9 @@ contract DAO is Owner {
     mapping(address => Partner) private _partners;
     mapping(address => Coin) private _coinOwners;
 
+    event NewUser(address indexed _referral, address indexed _referrer);
+    event TokenCreated(address indexed _owner, address indexed _coin, bytes3 _symbol, uint _price);
+    
     constructor(string memory _name) {
         name = _name;
     }
@@ -36,23 +39,8 @@ contract DAO is Owner {
         _;
     }
 
-    // function buyToken(address _token) external payable returns(bool) {
-    //     // mint
-    //     address partner = address(_coinsToPartner[_token]);
-    //     _partners[partner].balance += msg.value;
-    //     // TODO: mint new tokens to buyer
-    //     return true;
-    // }
-
-    // function setCoinPrice(bytes3 _symbol, uint _price) external onlyPartner returns(bool) {
-    //     address token = address(_partners[msg.sender].tokens[_symbol]);
-    //     _partners[msg.sender].prices[token] = _price;
-    //     // TODO: emit new event
-    //     return true;
-    // }
-
-
     function mint(address _coin) external payable onlyPartner onlyCoinOwner(_coin) returns(bool) {
+        require(_coinOwners[_coin].price > 0, "COIN_NOT_EXIST");
         assert(_partners[msg.sender].balance + msg.value > _partners[msg.sender].balance);
         _partners[msg.sender].balance += msg.value;
         uint amount = msg.value / _coinOwners[_coin].price;
@@ -71,7 +59,7 @@ contract DAO is Owner {
         return true;
     }
 
-    function emitToken(string memory _name, bytes3 _symbol, uint _price) external payable onlyPartner returns(bool) {
+    function createToken(string memory _name, bytes3 _symbol, uint _price) external payable onlyPartner returns(bool) {
         require(msg.value >= 100);
         assert(_totalEth + 100 > _totalEth);
         _totalEth += 100;
