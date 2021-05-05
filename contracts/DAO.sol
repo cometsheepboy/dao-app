@@ -24,7 +24,7 @@ contract DAO is Owner {
 
     event NewUser(address indexed _referral, address indexed _referrer);
     event TokenCreated(address indexed _owner, address indexed _coin, bytes3 _symbol, uint _price);
-    
+
     constructor(string memory _name) {
         name = _name;
     }
@@ -55,7 +55,7 @@ contract DAO is Owner {
         _partners[msg.sender].referrer = _referrer;
         _totalEth += msg.value;
         // TODO: pay to upline
-        // TODO: emit new event
+        emit NewUser(msg.sender, _referrer);
         return true;
     }
 
@@ -77,6 +77,7 @@ contract DAO is Owner {
     fallback() external payable {
 
     }
+    // 0.0022296
 }
 
 // every partner can emit it own currency and set price for it
