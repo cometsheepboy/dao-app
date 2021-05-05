@@ -59,7 +59,11 @@ contract DAO is Owner {
         return true;
     }
 
-    function createToken(string memory _name, bytes3 _symbol, uint _price) external payable onlyPartner returns(bool) {
+    function createToken(
+        string memory _name, 
+        string memory _symbol, 
+        uint _price
+    ) external payable onlyPartner returns(bool) {
         require(msg.value >= 100);
         assert(_totalEth + 100 > _totalEth);
         _totalEth += 100;
@@ -69,7 +73,7 @@ contract DAO is Owner {
         // TODO: emit event new token added
         return true;
     }
-    
+
     receive() external payable {
 
     }
@@ -77,7 +81,6 @@ contract DAO is Owner {
     fallback() external payable {
 
     }
-    // 0.0022296
 }
 
 // every partner can emit it own currency and set price for it
