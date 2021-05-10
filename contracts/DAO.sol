@@ -5,6 +5,10 @@ import "./IERC20.sol";
 import "./ERC20.sol";
 import "./Owner.sol";
 
+contract DAOToken is ERC20 {
+    constructor(string memory _name, string memory _symbol, uint8 _decimals) ERC20(_name, _symbol, _decimals) {}
+}
+
 contract DAO is Owner {
     string public name;
     uint private _totalEth;
@@ -39,16 +43,6 @@ contract DAO is Owner {
         _;
     }
 
-    function mint(address _coin) external payable onlyPartner onlyCoinOwner(_coin) returns(bool) {
-        require(_coinOwners[_coin].price > 0, "COIN_NOT_EXIST");
-        assert(_partners[msg.sender].balance + msg.value > _partners[msg.sender].balance);
-        _partners[msg.sender].balance += msg.value;
-        uint amount = msg.value / _coinOwners[_coin].price;
-        ERC20 ctr = ERC20(_coin);
-        ctr.mint(msg.sender, amount);
-        return true;
-    }
-
     function register(address _referrer) external payable returns(bool) {
         require(_referrer != address(0), "REFERRER_REQUIRED");
         require(msg.value >= 1000, "NOT_ENOUGH_ETH");
@@ -62,10 +56,19 @@ contract DAO is Owner {
     function createToken(string memory _name, string memory _symbol, uint _price) external payable onlyPartner {
         require(msg.value >= 100);
         assert(_totalEth + 100 > _totalEth);
-        ERC20 coin = new ERC20(_name, _symbol, 18, msg.sender);
+        ERC20 coin = new ERC20(_name, _symbol, 18);
         _coinOwners[address(coin)].owner = msg.sender;
         _coinOwners[address(coin)].price = _price;
         emit TokenCreated(msg.sender, address(coin), _symbol, _price);
+    }
+    
+    function buyToken(address _coin) external payable {
+        ERC20 ctr = ERC20(_coin);
+        ctr._mint();
+    }
+    
+    function buyToken(string memory _symbol) external payable {
+        
     }
     
     receive() external payable {
