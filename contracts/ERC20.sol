@@ -20,20 +20,6 @@ contract ERC20 is IERC20 {
         minter = minter_;
     }
     
-    modifier onlyMinter() {
-        require(msg.sender == minter, "MOD_ONLY_MINTER");
-        _;
-    }
-
-    function mint(address _to, uint _amount) external onlyMinter returns(uint) {
-        assert(_totalSupply + _amount > _totalSupply);
-        assert(_balances[_to] + _amount > _balances[_to]);
-        require(_amount != 0, "ZERO_AMOUNT");
-        _totalSupply += _amount;
-        _balances[_to] += _amount;
-        return _totalSupply;
-    }
-    
     function name() external view override returns (string memory) {
         return _name;
     }
