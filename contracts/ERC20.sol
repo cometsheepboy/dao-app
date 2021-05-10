@@ -8,16 +8,14 @@ contract ERC20 is IERC20 {
     string private _symbol;
     uint8 private _decimals;
     uint private _totalSupply;
-    address public minter;
     
     mapping(address => uint) private _balances;
     mapping(address => mapping(address => uint)) private _allowances;
     
-    constructor(string memory name_, string memory symbol_, uint8 decimals_, address minter_) {
+    constructor(string memory name_, string memory symbol_, uint8 decimals_) {
         _name = name_;
         _symbol = symbol_;
         _decimals = decimals_;
-        minter = minter_;
     }
     
     function name() external view override returns (string memory) {
@@ -72,5 +70,13 @@ contract ERC20 is IERC20 {
         _balances[_to] += _value;
         _allowances[_from][_to] -= _value;
         return true;
+    }
+
+    function _mint(address _account, uint256 _amount) internal virtual {
+        require(_account != address(0), "ERC2: mint to the zero address");
+        // assert ???
+        _totalSupply += _amount;
+        _balances[_account] += _amount;
+        emit Transfer(address(0), _account, _amount);
     }
 }
