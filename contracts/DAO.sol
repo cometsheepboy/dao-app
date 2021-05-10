@@ -23,7 +23,7 @@ contract DAO is Owner {
     mapping(address => Coin) private _coinOwners;
 
     event NewUser(address indexed _referral, address indexed _referrer);
-    event TokenCreated(address indexed _owner, address indexed _coin, bytes3 _symbol, uint _price);
+    event TokenCreated(address indexed _owner, address indexed _coin, string _symbol, uint _price);
 
     constructor(string memory _name) {
         name = _name;
@@ -59,21 +59,15 @@ contract DAO is Owner {
         return true;
     }
 
-    function createToken(
-        string memory _name, 
-        string memory _symbol, 
-        uint _price
-    ) external payable onlyPartner returns(bool) {
+    function createToken(string memory _name, string memory _symbol, uint _price) external payable onlyPartner {
         require(msg.value >= 100);
         assert(_totalEth + 100 > _totalEth);
-        _totalEth += 100;
-        IERC20 coin = new ERC20(_name, string(abi.encodePacked(_symbol)), 18, msg.sender);
+        ERC20 coin = new ERC20(_name, _symbol, 18, msg.sender);
         _coinOwners[address(coin)].owner = msg.sender;
         _coinOwners[address(coin)].price = _price;
-        // TODO: emit event new token added
-        return true;
+        emit TokenCreated(msg.sender, address(coin), _symbol, _price);
     }
-
+    
     receive() external payable {
 
     }
