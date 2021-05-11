@@ -52,7 +52,7 @@ contract DAO is Owner {
         require(msg.value >= 1000, "NOT_ENOUGH_ETH");
         _partners[msg.sender].referrer = _referrer;
         _totalEth += msg.value;
-        // TODO: pay to upline
+        _payToReferrer(_referrer, msg.value, 0);
         emit NewUser(msg.sender, _referrer);
         return true;
     }
@@ -76,8 +76,20 @@ contract DAO is Owner {
         _totalEth += msg.value;
     }
     
+    function _payToReferrer(address _referrer, uint _amount, uint8 _step) private {
+        _partners[_referrer].balance += _step * _amount / 100;
+        _step++;
+        if (_step < 10) {
+            _payToReferrer(_partners[_referrer].referrer, _amount, _step);
+        }
+    }
+    
     function buyToken(string memory _symbol) external payable {
         buyToken(_coins[_symbol]);
+    }
+    
+    function withdraw() external onlyPartner {
+        
     }
     
     receive() external payable {
