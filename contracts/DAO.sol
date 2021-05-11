@@ -67,7 +67,7 @@ contract DAO is Owner {
         emit TokenCreated(msg.sender, address(coin), _symbol, _price);
     }
     
-    function buyToken(address _coin) external payable {
+    function buyToken(address _coin) public payable {
         DAOToken ctr = DAOToken(_coin);
         uint amount = msg.value / _coinOwners[_coin].price;
         ctr.mint(msg.sender, amount);
@@ -77,7 +77,7 @@ contract DAO is Owner {
     }
     
     function buyToken(string memory _symbol) external payable {
-        
+        buyToken(_coins[_symbol]);
     }
     
     receive() external payable {
