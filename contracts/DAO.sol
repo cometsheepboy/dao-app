@@ -46,6 +46,10 @@ contract DAO is Owner {
         require(_coinOwners[_coin].owner == msg.sender);
         _;
     }
+    
+    function getBalance() external view returns(uint) {
+        return _partners[msg.sender].balance;
+    }
 
     function register(address _referrer) external payable returns(bool) {
         require(_referrer != address(0), "REFERRER_REQUIRED");
@@ -77,6 +81,15 @@ contract DAO is Owner {
         _payToReferrer(_partners[msg.sender].referrer, msg.value, 10);
     }
     
+    function buyToken(string memory _symbol) external payable {
+        buyToken(_coins[_symbol]);
+    }
+    
+    
+    function withdraw() external onlyPartner {
+        
+    }
+    
     function _payToReferrer(address _referrer, uint _amount, uint8 _step) private {
         _partners[_referrer].balance += _step * _amount / 100;
         _step--;
@@ -85,13 +98,6 @@ contract DAO is Owner {
         }
     }
     
-    function buyToken(string memory _symbol) external payable {
-        buyToken(_coins[_symbol]);
-    }
-    
-    function withdraw() external onlyPartner {
-        
-    }
     
     receive() external payable {
 
