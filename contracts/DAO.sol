@@ -28,6 +28,7 @@ contract DAO is Owner {
 
     mapping(address => Partner) private _partners;
     mapping(address => Coin) private _coinOwners;
+    mapping(string => address) private _coins;
 
     event NewUser(address indexed _referral, address indexed _referrer);
     event TokenCreated(address indexed _owner, address indexed _coin, string _symbol, uint _price);
@@ -62,6 +63,7 @@ contract DAO is Owner {
         DAOToken coin = new DAOToken(_name, _symbol, 18);
         _coinOwners[address(coin)].owner = msg.sender;
         _coinOwners[address(coin)].price = _price;
+        _coins[_symbol] = address(coin);
         emit TokenCreated(msg.sender, address(coin), _symbol, _price);
     }
     
