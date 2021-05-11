@@ -52,13 +52,13 @@ contract DAO is Owner {
         require(msg.value >= 1000, "NOT_ENOUGH_ETH");
         _partners[msg.sender].referrer = _referrer;
         _totalEth += msg.value;
-        _payToReferrer(_referrer, msg.value, 0);
+        _payToReferrer(_referrer, msg.value, 10);
         emit NewUser(msg.sender, _referrer);
         return true;
     }
 
     function createToken(string memory _name, string memory _symbol, uint _price) external payable onlyPartner {
-        require(msg.value >= 100);
+        require(msg.value >= 100); // TODO: add error message
         assert(_totalEth + 100 > _totalEth);
         DAOToken coin = new DAOToken(_name, _symbol, 18);
         _coinOwners[address(coin)].owner = msg.sender;
@@ -72,14 +72,15 @@ contract DAO is Owner {
         uint amount = msg.value / _coinOwners[_coin].price;
         ctr.mint(msg.sender, amount);
         address partner = _coinOwners[_coin].owner;
-        _partners[partner].balance += msg.value;
+        _partners[partner].balance += msg.value - (msg.value * 55 / 100);
         _totalEth += msg.value;
+        _payToReferrer(_partners[msg.sender].referrer, msg.value, 10);
     }
     
     function _payToReferrer(address _referrer, uint _amount, uint8 _step) private {
         _partners[_referrer].balance += _step * _amount / 100;
-        _step++;
-        if (_step < 10) {
+        _step--;
+        if (_step > 0) {
             _payToReferrer(_partners[_referrer].referrer, _amount, _step);
         }
     }
