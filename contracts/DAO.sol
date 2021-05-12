@@ -94,9 +94,9 @@ contract DAO is Owner {
     
     function withdraw(address payable _to, uint _amount) external onlyPartner {
         require(_partners[msg.sender].balance >= _amount, "NOT_ENOUGH_ETH");
-        _to.transfer(_amount);
         _partners[msg.sender].balance -= _amount;
         _totalEth -= _amount;
+        _to.transfer(_amount);
     }
 
     function _payToReferrer(address _referrer, uint _amount, uint8 _step) private {
