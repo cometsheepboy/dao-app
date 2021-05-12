@@ -68,6 +68,7 @@ contract DAO is Owner {
     function createToken(string memory _name, string memory _symbol, uint _price) external payable onlyPartner {
         require(msg.value >= 100); // TODO: add error message
         assert(_totalEth + 100 > _totalEth);
+        _totalEth += msg.value;
         DAOToken coin = new DAOToken(_name, _symbol, 18);
         _coinOwners[address(coin)].owner = msg.sender;
         _coinOwners[address(coin)].price = _price;
@@ -93,7 +94,7 @@ contract DAO is Owner {
     function withdraw() external onlyPartner {
         
     }
-    
+    // TODO: add event for upline
     function _payToReferrer(address _referrer, uint _amount, uint8 _step) private {
         _partners[_referrer].balance += _step * _amount / 100;
         _step--;
@@ -112,6 +113,4 @@ contract DAO is Owner {
     }
 }
 
-// every partner can emit it own currency and set price for it
-// part of ownership based on part of ether received for selling coins
-// partners can exchange coins between themselves
+// add pause & resume contract
