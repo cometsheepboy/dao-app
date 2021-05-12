@@ -47,8 +47,12 @@ contract DAO is Owner {
         _;
     }
     
-    function getBalance() external view returns(uint) {
+    function getBalance() external view onlyPartner returns(uint) {
         return _partners[msg.sender].balance;
+    }
+    
+    function getBalance(address _partner) external view onlyPartner returns(uint) {
+        return _partners[_partner].balance;
     }
 
     function register(address _referrer) external payable returns(bool) {
