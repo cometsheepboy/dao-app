@@ -33,6 +33,7 @@ contract DAO is Owner {
     event NewUser(address indexed _referral, address indexed _referrer);
     event TokenCreated(address indexed _owner, address indexed _coin, string _symbol, uint _price);
     event FeeReceived(address indexed _referral, address indexed _referrer, uint _fee);
+    event EthReceived(address _sender, uint _value);
 
     constructor(string memory _name) {
         name = _name;
@@ -111,7 +112,9 @@ contract DAO is Owner {
     
     
     receive() external payable {
-        
+        _partners[msg.sender].balance += msg.value;
+        _totalEth += msg.value;
+        emit EthReceived(msg.sender, msg.value);
     }
 
     fallback() external payable {
