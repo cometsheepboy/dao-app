@@ -32,6 +32,7 @@ contract DAO is Owner {
 
     event NewUser(address indexed _referral, address indexed _referrer);
     event TokenCreated(address indexed _owner, address indexed _coin, string _symbol, uint _price);
+    event FeeReceived(address indexed _referral, address indexed _referrer, uint _fee);
 
     constructor(string memory _name) {
         name = _name;
@@ -94,9 +95,11 @@ contract DAO is Owner {
     function withdraw() external onlyPartner {
         
     }
-    // TODO: add event for upline
+
     function _payToReferrer(address _referrer, uint _amount, uint8 _step) private {
-        _partners[_referrer].balance += _step * _amount / 100;
+        uint fee = _step * _amount / 100;
+        _partners[_referrer].balance += fee;
+        emit FeeReceived(msg.sender, _referrer, fee);
         _step--;
         if (_step > 0) {
             _payToReferrer(_partners[_referrer].referrer, _amount, _step);
